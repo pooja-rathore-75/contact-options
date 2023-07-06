@@ -15,3 +15,6 @@ contacts.each do |contact|
   contact["ranking"] = ranking
   puts "****************#{contact}****************"
 end
+
+contacts_not_offered_vip_intro = contacts.reject { |contact| contact["introsOffered"]["vip"] > 0 }
+max_ranking = contacts_not_offered_vip_intro.map { |contact| contact["ranking"] }.max
