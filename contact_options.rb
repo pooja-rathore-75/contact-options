@@ -37,10 +37,27 @@ class ContactOptions
   def offer_intro(max_ranking)
     @contacts.each do |contact|
       intro_type = (contact['ranking'] == max_ranking) ? 'VIP' : 'free'
-      puts "Offer #{intro_type} introduction to #{contact['name']}"
+      contact['contactOption'] = intro_type
+    end
+  end
+
+  def sort_contacts
+    contact_option
+    @contacts.sort_by { |contact| contact['name'].split.last.downcase }
+  end
+
+  def display_contacts(sorted_contacts)
+    sorted_contacts.each do |contact|
+      puts "*****************Contact Details**************************"
+      puts "Name: #{contact['name']}"
+      puts "Email: #{contact['email']}"
+      puts "Ranking: #{contact['ranking']}"
+      puts "Contact Option: #{contact['contactOption']}"
+      puts "Offer #{contact["contactOption"]} introduction to #{contact['name']}"
     end
   end
 end
 
 contact_options = ContactOptions.new('contact_options.json')
-contact_options.contact_option
+sorted_contacts = contact_options.sort_contacts
+contact_options.display_contacts(sorted_contacts)
