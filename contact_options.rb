@@ -1,28 +1,46 @@
 require 'json'
 
-file_path = 'contact_options.json'
-json_data = File.read(file_path)
+class ContactOptions
+  def initialize(file_path)
+    @file_path = file_path
+    @contacts = load_contacts
+    calculate_rankings
+  end
 
-contacts = JSON.parse(json_data)
+  def load_contacts
+    json_data = File.read(@file_path)
+    JSON.parse(json_data)
+  end
 
-contacts.each do |contact|
-  ranking = 3
-  ranking += 2 unless ['gmail.com', 'hotmail.com', 'outlook.com'].include? contact["email"] 
+  def calculate_rankings
+    @contacts.each do |contact|
+      ranking = 3
+      ranking += 2 unless ['gmail.com', 'hotmail.com', 'outlook.com'].include?(contact['email'])
 
-  offer = contact["introsOffered"].values.sum
-  ranking += offer
+      intros_offered = contact['introsOffered'].values.sum
+      ranking += intros_offered
 
-  contact["ranking"] = ranking
-  puts "****************#{contact}****************"
-end
+      contact['ranking'] = ranking
+    end
+  end
 
-contacts_not_offered_vip_intro = contacts.reject { |contact| contact["introsOffered"]["vip"] > 0 }
-max_ranking = contacts_not_offered_vip_intro.map { |contact| contact["ranking"] }.max
+  def contact_option
+    max_ranking = max_ranking_without_vip_intro
+    offer_intro(max_ranking)
+  end
 
-contacts.each do |contact|
-  if contact["ranking"] == max_ranking
-    puts "Offer VIP introduction to #{contact[:name]}"
-  else
-    puts "Offer free introduction to #{contact[:name]}"
+  def max_ranking_without_vip_intro
+    contacts_not_offered_vip_intro = @contacts.reject { |contact| contact['introsOffered']['vip'] > 0 }
+    contacts_not_offered_vip_intro.map { |contact| contact['ranking'] }.max
+  end
+
+  def offer_intro(max_ranking)
+    @contacts.each do |contact|
+      intro_type = (contact['ranking'] == max_ranking) ? 'VIP' : 'free'
+      puts "Offer #{intro_type} introduction to #{contact['name']}"
+    end
   end
 end
+
+contact_options = ContactOptions.new('contact_options.json')
+contact_options.contact_option
