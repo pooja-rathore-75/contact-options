@@ -20,6 +20,7 @@ In this ruby challenge, please take care to provide clean & optimised code.
 3. Create one or more unit tests that will test the above logic.
 
 
+# Note:
 
 To run the functioanlity:
  `ruby contact_options.rb`
