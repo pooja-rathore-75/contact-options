@@ -18,3 +18,11 @@ In this ruby challenge, please take care to provide clean & optimised code.
     </aside>
     
 3. Create one or more unit tests that will test the above logic.
+
+
+
+To run the functioanlity:
+ `ruby contact_options.rb`
+
+To run the rspec:
+   `rspec contact_options_spec.rb`
